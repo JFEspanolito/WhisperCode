@@ -7,16 +7,17 @@ import subprocess
 import os
 
 # Ruta del directorio a analizar
-directorio = r"F:\Software\IA\Whisper OpenAI"
+rutaInputs = r"F:\Software\IA\Whisper OpenAI\WhisperCode\inputs"
+rutaOuputs = r"F:\Software\IA\Whisper OpenAI\WhisperCode\outputs"
 
 # Extensiones permitidas (audio y video)
 ext_permitidas = [".mp3", ".wav", ".ogg", ".flac", ".m4a", ".mp4", ".mkv", ".mov", ".avi"]
 
 # Buscar primer archivo válido
 ruta_original = None
-for archivo in os.listdir(directorio):
+for archivo in os.listdir(rutaInputs):
     if os.path.splitext(archivo)[1].lower() in ext_permitidas:
-        ruta_original = os.path.join(directorio, archivo)
+        ruta_original = os.path.join(rutaInputs, archivo)
         break
 
 if not ruta_original:
@@ -53,5 +54,7 @@ result = model.transcribe(ruta_mp3, language="es")
 print("Texto transcrito:\n", result["text"])
 
 # Guardar a archivo
-with open(nombre_base + "_transcripcion.txt", "w", encoding="utf-8") as f:
+nombre_salida = os.path.basename(nombre_base) + "_transcripcion.txt"
+ruta_salida = os.path.join(rutaOuputs, nombre_salida)
+with open(ruta_salida, "w", encoding="utf-8") as f:
     f.write(result["text"])
