@@ -1,3 +1,4 @@
+#region Configuración del entorno
 # Presiona Ctrl + Shift + P
 # Escribe: Python: Select Interpreter
 # Elige la ruta que apunta a:
@@ -5,11 +6,15 @@
 import whisper
 import subprocess
 import os
+#endregion
 
+#region Configuración de rutas
 # Ruta del directorio a analizar
 rutaInputs = r"F:\Software\IA\Whisper OpenAI\WhisperCode\inputs"
 rutaOuputs = r"F:\Software\IA\Whisper OpenAI\WhisperCode\outputs"
+#endregion
 
+#region Verificar directorios & Cambio de formato en archivos si es necesario
 # Extensiones permitidas (audio y video)
 ext_permitidas = [".mp3", ".wav", ".ogg", ".flac", ".m4a", ".mp4", ".mkv", ".mov", ".avi"]
 
@@ -45,16 +50,21 @@ if extension != ".mp3":
 # -q:a 0: máxima calidad de audio en VBR
 # -map a: extrae solo la pista de audio
 # ffmpeg -i video.mp4 -q:a 0 -map a audio.mp3
+#endregion
 
+#region Transcripción con Whisper
+#region Modelo & Transcripción
 # Cargar modelo
 model = whisper.load_model("base")
 
 # Transcribir
 result = model.transcribe(ruta_mp3, language="es")
 print("Texto transcrito:\n", result["text"])
+#endregion
 
 # Guardar a archivo
 nombre_salida = os.path.basename(nombre_base) + "_transcripcion.txt"
 ruta_salida = os.path.join(rutaOuputs, nombre_salida)
 with open(ruta_salida, "w", encoding="utf-8") as f:
     f.write(result["text"])
+#endregion
