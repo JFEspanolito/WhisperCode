@@ -12,14 +12,14 @@ Este script permite probar el modelo `whisper` de OpenAI para transcripción aut
 
 ## Requisitos
 
-- Python 3.10
-- [whisper](https://github.com/openai/whisper)
+- Python 3.10 o superior
+- [openai-whisper](https://github.com/openai/whisper)
 - `ffmpeg` instalado y accesible en la línea de comandos.
 
 ## Uso
 
-1. Asegúrate de tener instalado el intérprete correcto:
-   - `F:\Software\IDE\Python\x64\Python3.10\python.exe`
+1. Instala las dependencias del proyecto:
+   - `pip install -r requirements.txt`
 2. Coloca un archivo de audio o video compatible en el directorio:
    - `F:\Software\IA\Whisper OpenAI`
 3. Ejecuta el script `WhisperOpenAI.py`.

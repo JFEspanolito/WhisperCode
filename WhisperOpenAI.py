@@ -3,11 +3,19 @@
 # Escribe: Python: Select Interpreter
 # Elige la ruta que apunta a:
 # F:\Software\IDE\Python\x64\Python3.10\python.exe
-import whisper
+# Ejecutar
+# python WhisperOpenAI.py
+
 import subprocess
 import os
 import sys
-# endregion
+
+try:
+    import whisper
+except ModuleNotFoundError:
+    print("Falta el paquete 'openai-whisper' en el interprete activo.")
+    print("Instalalo con: pip install openai-whisper")
+    sys.exit(1)
 
 # region Configuración de rutas
 # Ruta del directorio a analizar
