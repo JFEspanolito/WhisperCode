@@ -77,6 +77,12 @@ if ffmpeg_cmd is None:
             print("Opciones: (1) Instala ffmpeg y añade su carpeta 'bin' al PATH, (2) define la variable de entorno FFMPEG_PATH con la ruta a ffmpeg.exe, o (3) coloca ffmpeg.exe en la carpeta del proyecto.")
             print("Descargas: https://ffmpeg.org/download.html")
             sys.exit(1)
+# Añadir carpeta de ffmpeg al PATH para que librerías (p. ej. whisper) que llaman a 'ffmpeg' la encuentren
+ffmpeg_dir = os.path.dirname(ffmpeg_cmd)
+if ffmpeg_dir:
+    current_path = os.environ.get("PATH", "")
+    if ffmpeg_dir not in current_path:
+        os.environ["PATH"] = ffmpeg_dir + os.pathsep + current_path
 
 # Cargar modelo una sola vez
 print("Cargando modelo Whisper...")
