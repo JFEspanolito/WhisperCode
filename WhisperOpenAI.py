@@ -9,6 +9,7 @@
 import subprocess
 import os
 import sys
+import shutil
 
 try:
     import whisper
@@ -43,6 +44,40 @@ os.makedirs(rutaOuputs, exist_ok=True)
 mp3_dir = os.path.join(rutaOuputs, "mp3s")
 os.makedirs(mp3_dir, exist_ok=True)
 
+# Verificar disponibilidad de ffmpeg
+ffmpeg_cmd = shutil.which("ffmpeg")
+if ffmpeg_cmd is None:
+    # 1) Permitir al usuario especificar FFMPEG_PATH como variable de entorno
+    env_path = os.environ.get("FFMPEG_PATH")
+    if env_path and os.path.isfile(env_path):
+        ffmpeg_cmd = env_path
+    else:
+        # 2) Buscar ffmpeg.exe dentro del proyecto (carpeta del script)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        found = None
+        for root, dirs, files in os.walk(base_dir):
+            if "ffmpeg.exe" in files:
+                found = os.path.join(root, "ffmpeg.exe")
+                break
+
+        # 3) Comprobar ubicaciones comunes en Windows
+        common_paths = [r"F:\Software\IA\Whisper OpenAI\ffmpeg\bin\ffmpeg.exe", r"F:\Software\IA\Whisper OpenAI\ffmpeg-7.1.1-essentials_build\bin\ffmpeg.exe"]
+        for p in common_paths:
+            if found:
+                break
+            if os.path.isfile(p):
+                found = p
+                break
+
+        if found:
+            ffmpeg_cmd = found
+            print(f"Usando ffmpeg encontrado en: {ffmpeg_cmd}")
+        else:
+            print("Error: 'ffmpeg' no está disponible en PATH ni se encontró en el proyecto.")
+            print("Opciones: (1) Instala ffmpeg y añade su carpeta 'bin' al PATH, (2) define la variable de entorno FFMPEG_PATH con la ruta a ffmpeg.exe, o (3) coloca ffmpeg.exe en la carpeta del proyecto.")
+            print("Descargas: https://ffmpeg.org/download.html")
+            sys.exit(1)
+
 # Cargar modelo una sola vez
 print("Cargando modelo Whisper...")
 try:
@@ -71,9 +106,9 @@ for archivo in archivos_validos:
 
         print(f"Convirtiendo '{archivo}' ({extension}) a MP3...")
         if extension in video_exts:
-            cmd = ["ffmpeg", "-y", "-i", ruta_original, "-q:a", "0", "-map", "a", ruta_mp3]
+            cmd = [ffmpeg_cmd, "-y", "-i", ruta_original, "-q:a", "0", "-map", "a", ruta_mp3]
         else:
-            cmd = ["ffmpeg", "-y", "-i", ruta_original, ruta_mp3]
+            cmd = [ffmpeg_cmd, "-y", "-i", ruta_original, ruta_mp3]
 
         try:
             subprocess.run(cmd, check=True)
